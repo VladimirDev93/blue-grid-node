@@ -20,4 +20,5 @@ app.get('/users/?:name?:email', (req, res) => {
             db.close();
         });
     });
+    res.end();
 });
