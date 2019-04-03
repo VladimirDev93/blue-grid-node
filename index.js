@@ -4,10 +4,10 @@ const express = require('express');
 const app = express();
 
 // RESTful API Endpoint
-app.get('/users/?:name?:email', (req, res) => {
-    // let { name, email } = req.query
-    let name = req.query.name;
-    let email = req.query.email;
+app.get('/users', (req, res) => {
+    // Get the quiery params
+    let { name, email } = req.query;
+
     // Connecto to MongoDB instance
     MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
         // Abort if error occures
@@ -21,4 +21,8 @@ app.get('/users/?:name?:email', (req, res) => {
         });
     });
     res.end();
+});
+
+app.listen(process.env.PORT || 3000, () => {
+    console.log('The application is running');
 });
