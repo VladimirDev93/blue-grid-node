@@ -9,7 +9,7 @@ app.get('/users', (req, res) => {
     let { name, email, limit } = req.query;
 
     // Connecto to MongoDB instance
-    MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
+    MongoClient.connect('mongodb://localhost:27017/', { useNewUrlParser: true }, (err, db) => {
         // Abort if error occurs
         if (err) throw err;
         // Get the database
@@ -43,6 +43,6 @@ app.get('/users', (req, res) => {
     });
 });
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log('The application is running');
+app.listen(10254, () => {
+    console.log('The application is running on port 10254');
 });
