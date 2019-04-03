@@ -6,8 +6,8 @@ const app = express();
 // RESTful API Endpoint
 app.get('/users', (req, res) => {
     // Get the quiery params
-    let { name, email } = req.query;
-
+    let { name, email, limit } = req.query;
+    
     // Connecto to MongoDB instance
     MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
         // Abort if error occures
@@ -15,10 +15,10 @@ app.get('/users', (req, res) => {
         // Get the database
         let dbName = db.db('VladimirJovanovic');
         // Search through the collection
-        dbName.collection('users').findOne({ email, name }, (err, res) => {
+        dbName.collection('users').find({ email, name }, (err, res) => {
             if (err) throw err;
             db.close();
-        });
+        }).limit(limit);
     });
     res.end();
 });
