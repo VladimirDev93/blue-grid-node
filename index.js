@@ -10,34 +10,37 @@ app.get('/users', (req, res) => {
 
     // Connecto to MongoDB instance
     MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
-        // Abort if error occures
+        // Abort if error occurs
         if (err) throw err;
         // Get the database
         let dbName = db.db('VladimirJovanovic');
-        
+        let collection = dbName.collection('users');
+
         // If there are no query strings
         if (!/\?.+/.test(req.url)) {
             // Search through the collection and return all users
-            dbName.collection('users').find({}, (err, res) => {
+            collection.find({}).toArray(function(err, result) {
                 if (err) throw err;
-                // Print the results to the console
-                console.log(res)
-                // Close the database connection
+                res.end(JSON.stringify(result));
+                db.close();
+              });
+        } else if (req.query.limit) {
+            // Search through the collection and return all the users 
+            // with a limited number of objects
+            collection.find({}).limit(Number(limit)).toArray(function(err, result) {
+                if (err) throw err;
+                res.end(JSON.stringify(result));
+                db.close();
+              });
+        } else {
+            // Search through the collection with selector(s)
+            collection.find({ $or: [{ 'email': email }, {'name': name }] }).toArray(function (err, result) {
+                if (err) throw err;
+                res.end(JSON.stringify(result));
                 db.close();
             });
-        } else {
-            // Search through the collection with selectors and limit
-            // the response results
-            dbName.collection('users').find({ email, name }, (err, res) => {
-                if (err) throw err;
-                // Print the results to the console
-                console.log(res)
-                // Close the database connection
-                db.close();
-            }).limit(limit);
         }
     });
-    res.end();
 });
 
 app.listen(process.env.PORT || 3000, () => {
