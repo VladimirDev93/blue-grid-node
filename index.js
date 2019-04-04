@@ -3,6 +3,13 @@ const MongoClient = require('mongodb').MongoClient;
 const express = require('express');
 const app = express();
 
+// Middleware
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json');
+    next();
+});
+
 // RESTful API Endpoint
 app.get('/users', (req, res) => {
     // Get the query params
